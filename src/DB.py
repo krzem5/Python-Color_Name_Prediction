@@ -1,8 +1,14 @@
+import os
+
+
+
 class DB:
 	def __init__(self,d):
 		self.d=d
-		try:open(self.d,"a").close()
-		except:open(self.d,"w").close()
+		if (os.path.exists(self.d)):
+			open(self.d,"a").close()
+		else:
+			open(self.d,"w").close()
 		self.ni=self.getNi()
 	def write(self,v,c):
 		f=open(self.d,"a")
