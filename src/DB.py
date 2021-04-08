@@ -5,30 +5,31 @@ import os
 class DB:
 	def __init__(self,d):
 		self.d=d
-		if (os.path.exists(self.d)):
-			open(self.d,"a").close()
-		else:
-			open(self.d,"w").close()
+		if (not os.path.exists(self.d)):
+			with open(self.d,"w") as f:
+				f.write("")
 		self.ni=self.getNi()
 	def write(self,v,c):
-		f=open(self.d,"a")
-		f.write(f"{self.ni}:{v}:{c}\n")
-		f.close()
+		with open(self.d,"a") as f:
+			f.write(f"{self.ni}:{v}:{c}\n")
 		self.ni+=1
 	def fetch(self,di):
-		for l in open(self.d,"r"):
-			s=l.replace('\n','').split(':')
-			if s[0]==str(di):return s[1:]
+		with open(self.d,"r") as f:
+			for l in f.read().replace("\r\n","\n").split("\n"):
+				s=l.replace('\n','').split(':')
+				if s[0]==str(di):return s[1:]
 		return ["",""]
 	def getNi(self):
 		i=0
-		for l in open(self.d,"r"):
-			if l!="":i+=1
+		with open(self.d,"r") as f:
+			for l in f.read().replace("\r\n","\n").split("\n"):
+				if l!="":i+=1
 		return i
 	def all(self):
 		l=[]
-		for ln in open(self.d,"r"):
-			l+=[ln.replace('\n','').split(':')[1:]]
+		with open(self.d,"r") as f:
+			for ln in f.read().replace("\r\n","\n").split("\n"):
+				l+=[ln.replace('\n','').split(':')[1:]]
 		return l
 	def count(self,seq):
 		vc=0 if seq.startswith("#") else 1
